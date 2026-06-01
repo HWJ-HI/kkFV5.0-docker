@@ -1,0 +1,29 @@
+.git
+.gitignore
+.github
+.idea
+.vscode
+*.iml
+
+# 构建产物（一体构建 Dockerfile 在镜像内生成；prebuilt 模式需保留 tar.gz）
+**/target
+!server/target/kkFileView-*.tar.gz
+
+# Windows 内置 LibreOffice，Docker 镜像不需要
+server/LibreOfficePortable
+
+# 本地运行时数据
+server/src/main/cache
+server/src/main/file
+
+# 测试与 CI 辅助
+tests
+.artifacts
+doc
+
+# 文档与杂项
+*.md
+!docker/**/*.md
+LICENSE
+SECURITY_CONFIG.md
+AGENTS.md

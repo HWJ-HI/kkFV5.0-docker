@@ -1,0 +1,26 @@
+# 宿主机先执行: mvn -B package -Dmaven.test.skip=true -pl server -am
+# 再执行: docker compose -f docker-compose.prebuilt.yml up -d --build
+
+services:
+  kkfileview:
+    build:
+      context: .
+      dockerfile: Dockerfile.prebuilt
+      args:
+        KKFILEVIEW_VERSION: "5.0.0"
+        RUNTIME_BASE: eclipse-temurin:21-jre-jammy
+        SKIP_BASE_SETUP: "false"
+    image: kkfileview:5.0.0
+    container_name: kkfileview
+    ports:
+      - "${KK_HOST_PORT:-8012}:8012"
+    environment:
+      KK_SERVER_PORT: "8012"
+    volumes:
+      - kkfileview-file:/opt/kkFileView-5.0.0/file
+      - kkfileview-log:/opt/kkFileView-5.0.0/log
+    restart: unless-stopped
+
+volumes:
+  kkfileview-file:
+  kkfileview-log:

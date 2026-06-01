@@ -39,7 +39,8 @@
         </pluginRepository>
       </pluginRepositories>
       <properties>
-        <maven.wagon.http.retryHandler.count>5</maven.wagon.httpconnectionManager.ttlSeconds>120</maven.wagon.httpconnectionManager.ttlSeconds>
+        <maven.wagon.http.retryHandler.count>5</maven.wagon.http.retryHandler.count>
+        <maven.wagon.httpconnectionManager.ttlSeconds>120</maven.wagon.httpconnectionManager.ttlSeconds>
         <aether.connector.http.connectionTimeout>300000</aether.connector.http.connectionTimeout>
         <aether.connector.requestTimeout>300000</aether.connector.requestTimeout>
       </properties>

@@ -1,49 +1,30 @@
-# 若 Maven 在 Docker 内拉依赖失败，请改用:
-#   mvn -B package -Dmaven.test.skip=true -pl server -am
-#   docker compose -f docker-compose.prebuilt.yml up -d --build
+# 默认使用「宿主机先打包 + Docker 运行」，避免 Docker 内拉 Maven 依赖失败
 # 详见 docker/DEPLOY.cn.md
 
 services:
   kkfileview:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prebuilt
       args:
         KKFILEVIEW_VERSION: "5.0.0"
-        # 默认 eclipse-temurin，避免单独拉 ubuntu:24.04 触发缓存损坏
         RUNTIME_BASE: eclipse-temurin:21-jre-jammy
         SKIP_BASE_SETUP: "false"
-        # 若已能访问 Docker Hub，可改用官方基础镜像以加快构建：
-        # RUNTIME_BASE: keking/kkfileview-base:5.0.0
-        # SKIP_BASE_SETUP: "true"
     image: kkfileview:5.0.0
     container_name: kkfileview
     ports:
       - "${KK_HOST_PORT:-8012}:8012"
     environment:
-      # 服务端口（容器内默认 8012）
       KK_SERVER_PORT: "8012"
-      # 对外访问地址，供预览链接拼接使用（按实际域名修改）
-      # KK_BASE_URL: "http://localhost:8012"
-      # 文件存储目录（容器内路径，已通过 volume 持久化）
-      # KK_FILE_DIR: "/opt/kkFileView-5.0.0/file"
-      # 如需 Redis 缓存，取消注释下方 redis 服务并配置：
-      # KK_CACHE_TYPE: "redis"
-      # KK_SPRING_REDISSON_ADDRESS: "redis://redis:6379"
+      # 信任所有外部文件源（与 application.properties 中 trust.host=* 等效）
+      KK_TRUST_HOST: "*"
     volumes:
       - kkfileview-file:/opt/kkFileView-5.0.0/file
       - kkfileview-log:/opt/kkFileView-5.0.0/log
+      # 挂载本地配置，改 application.properties 后 docker compose restart 即可生效（无需重新打包镜像）
+      - ./server/src/main/config/application.properties:/opt/kkFileView-5.0.0/config/application.properties:ro
     restart: unless-stopped
-
-  # 可选：Redis 缓存（默认使用 JDK 内存缓存，无需启动）
-  # redis:
-  #   image: redis:7-alpine
-  #   container_name: kkfileview-redis
-  #   restart: unless-stopped
-  #   volumes:
-  #     - kkfileview-redis:/data
 
 volumes:
   kkfileview-file:
   kkfileview-log:
-  # kkfileview-redis:

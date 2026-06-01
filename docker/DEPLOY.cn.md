@@ -33,7 +33,19 @@ docker compose up -d --build
 - 优先使用 **方式一（prebuilt）**
 - 或在 `docker/maven/settings.xml` 中已配置阿里云镜像，确认构建时使用了该文件
 
-### 缺少 `server/lib/jai_*.jar`
+3. **修改 `application.properties` 后不生效**
+
+   镜像内配置来自 `mvn package` 生成的 tar.gz，**不会自动同步源码修改**。
+
+   任选其一：
+   - 已配置 volume 挂载时：`docker compose restart` 即可
+   - 或重新打包：`mvn package` → `docker compose up -d --build`
+   - 或设置环境变量：`KK_TRUST_HOST=*`（见 docker-compose.yml）
+
+   验证容器内实际配置：
+   ```powershell
+   docker exec kkfileview grep trust.host /opt/kkFileView-5.0.0/config/application.properties
+   ```
 
 从官方仓库恢复：
 

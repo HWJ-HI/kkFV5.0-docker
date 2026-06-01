@@ -25,9 +25,9 @@ COPY server/src/main/config server/src/main/config
 COPY server/src/main/log server/src/main/log
 COPY server/src/main/resources server/src/main/resources
 
-# 使用 BuildKit 缓存 Maven 本地仓库，加速重复构建
+# 使用 BuildKit 缓存 Maven 本地仓库，加速重复构建（需 DOCKER_BUILDKIT=1）
 RUN --mount=type=cache,target=/root/.m2/repository \
-    mvn -B -s /root/.m2/settings.xml package -Dmaven.test.skip=true -pl server -am
+    mvn -B -s /root/.m2/settings.xml package "-Dmaven.test.skip=true" -pl server -am
 
 # ========== 2. 运行时基础环境 ==========
 FROM ${RUNTIME_BASE} AS base

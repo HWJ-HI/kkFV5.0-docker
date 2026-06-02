@@ -66,7 +66,8 @@ ARG KKFILEVIEW_VERSION
 
 ENV KKFILEVIEW_VERSION=${KKFILEVIEW_VERSION} \
     KKFILEVIEW_BIN_FOLDER=/opt/kkFileView-${KKFILEVIEW_VERSION}/bin \
-    KK_SERVER_PORT=8012
+    KK_SERVER_PORT=8012 \
+    KK_TRUST_HOST=*
 
 COPY --from=builder /build/server/target/kkFileView-*.tar.gz /tmp/kkFileView.tar.gz
 
